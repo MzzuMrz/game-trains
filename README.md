@@ -10,6 +10,8 @@ Un simulador de trenes basado en navegador que replica fielmente el viaje ferrov
 - **4 Zonas Ambientales**: Subtropical, semi-árido, pampas y urbano
 - **Ciclo Día/Noche**: Sistema dinámico de iluminación
 - **Múltiples Cámaras**: Vista de conductor, seguimiento, fija y cinemática
+- **Cabina Inmersiva**: Interior detallado con tablero, controles y espejos
+- **Efectos Realistas**: Vibración de cámara y balanceo basado en velocidad
 - **Optimización por Chunks**: Carga dinámica del mundo para rendimiento óptimo
 
 ## 🚀 Inicio Rápido
@@ -84,6 +86,7 @@ game-trains/
 │   │   └── CameraController.js  # Sistema de cámaras
 │   ├── world/
 │   │   ├── TrainModel.js        # Modelo 3D del tren
+│   │   ├── CabinInterior.js     # Interior de cabina detallado
 │   │   ├── TrackSystem.js       # Sistema de vías
 │   │   └── ChunkedWorld.js      # Generación de mundo por chunks
 │   ├── physics/
@@ -101,8 +104,9 @@ game-trains/
 └── package.json
 ```
 
-## 🎯 Características Implementadas (Fase 1)
+## 🎯 Características Implementadas
 
+### Fase 1 - Core Engine
 - ✅ Configuración básica del proyecto con Vite + Three.js
 - ✅ Modelo de tren low-poly con locomotora y vagones
 - ✅ Sistema de vías con curvas y gradientes
@@ -114,6 +118,18 @@ game-trains/
 - ✅ Ciclo día/noche dinámico
 - ✅ HUD completo con información del viaje
 - ✅ Sistema de control por teclado
+
+### Fase 1.5 - Enhanced Cabin View ⭐ NEW
+- ✅ Interior de cabina completamente modelado
+- ✅ Tablero de instrumentos con medidores funcionales
+- ✅ Marco de parabrisas y limpiaparabrisas
+- ✅ Palancas de acelerador y freno animadas
+- ✅ Espejos retrovisores laterales
+- ✅ Asientos de conductor y copiloto
+- ✅ Efectos de vibración de cámara basados en velocidad
+- ✅ Balanceo de cabeza (head bob) realista
+- ✅ FOV ajustable por modo de cámara
+- ✅ Rotación suave de cámara siguiendo la vía
 
 ## 🚧 Próximas Características
 

@@ -11,6 +11,7 @@ import { CameraController } from './CameraController.js';
 import { StationManager } from '../managers/StationManager.js';
 import { ChunkedWorld } from '../world/ChunkedWorld.js';
 import { UIController } from '../managers/UIController.js';
+import { CabinInterior } from '../world/CabinInterior.js';
 
 export class Game {
   constructor() {
@@ -23,6 +24,7 @@ export class Game {
 
     // Game systems
     this.trainModel = null;
+    this.cabinInterior = null;
     this.trackSystem = null;
     this.trainPhysics = null;
     this.cameraController = null;
@@ -103,6 +105,10 @@ export class Game {
   async initializeTrain() {
     this.trainModel = new TrainModel();
     this.scene.add(this.trainModel.getMesh());
+
+    // Add cabin interior
+    this.cabinInterior = new CabinInterior();
+    this.trainModel.getMesh().add(this.cabinInterior.getMesh());
 
     this.trainPhysics = new TrainPhysics({
       mass: 300000,
@@ -237,8 +243,20 @@ export class Game {
     // Update sun position for day/night cycle
     this.updateDayNightCycle(hour);
 
-    // Update camera
-    this.cameraController.update(deltaTime, position);
+    // Update camera with speed and rotation
+    const speedKmh = this.trainPhysics.getSpeedKmh();
+    this.cameraController.update(deltaTime, position, speedKmh, angle);
+
+    // Update cabin interior
+    this.cabinInterior.update(
+      speedKmh,
+      this.trainPhysics.getThrottle(),
+      this.trainPhysics.getBrake()
+    );
+
+    // Show/hide cabin interior based on camera mode
+    const isDriverView = this.cameraController.mode === 'DRIVER_VIEW';
+    this.cabinInterior.setVisible(isDriverView);
 
     // Update world chunks
     this.world.update(trainPos);
