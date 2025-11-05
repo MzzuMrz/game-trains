@@ -300,31 +300,31 @@ export class Game {
   }
 
   updateDayNightCycle(hour) {
-    // Update sun position
-    const sunAngle = ((hour - 6) / 12) * Math.PI;
-    this.sunLight.position.x = Math.cos(sunAngle) * 100;
-    this.sunLight.position.y = Math.sin(sunAngle) * 100;
+    // Update world's day/night cycle (sky, sun)
+    this.world.updateDayNightCycle(hour);
 
-    // Update sky color
-    let skyColor, fogColor;
+    // Update directional light intensity based on time
     if (hour < 6 || hour > 20) {
       // Night
-      skyColor = new THREE.Color(0x001133);
-      fogColor = new THREE.Color(0x001133);
       this.sunLight.intensity = 0.2;
     } else if (hour < 8 || hour > 18) {
       // Dawn/Dusk
-      skyColor = new THREE.Color(0xFF6B35);
-      fogColor = new THREE.Color(0xFF6B35);
       this.sunLight.intensity = 0.5;
     } else {
       // Day
-      skyColor = new THREE.Color(0x87CEEB);
-      fogColor = new THREE.Color(0x87CEEB);
       this.sunLight.intensity = 0.8;
     }
 
-    this.scene.background.lerp(skyColor, 0.01);
+    // Update fog
+    let fogColor;
+    if (hour < 6 || hour > 20) {
+      fogColor = new THREE.Color(0x001133);
+    } else if (hour < 8 || hour > 18) {
+      fogColor = new THREE.Color(0xFF6B35);
+    } else {
+      fogColor = new THREE.Color(0x87CEEB);
+    }
+
     this.scene.fog.color.lerp(fogColor, 0.01);
   }
 

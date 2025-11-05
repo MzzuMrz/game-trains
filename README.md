@@ -119,7 +119,7 @@ game-trains/
 - ✅ HUD completo con información del viaje
 - ✅ Sistema de control por teclado
 
-### Fase 1.5 - Enhanced Cabin View ⭐ NEW
+### Fase 1.5 - Enhanced Cabin & Landscapes ⭐ NEW
 - ✅ Interior de cabina completamente modelado
 - ✅ Tablero de instrumentos con medidores funcionales
 - ✅ Marco de parabrisas y limpiaparabrisas
@@ -130,6 +130,23 @@ game-trains/
 - ✅ Balanceo de cabeza (head bob) realista
 - ✅ FOV ajustable por modo de cámara
 - ✅ Rotación suave de cámara siguiendo la vía
+
+### Fase 1.6 - Rich Landscapes ⭐ NEW
+- ✅ Terreno con elevación variable (colinas, valles)
+- ✅ Cielo con gradiente shader y nubes volumétricas
+- ✅ Sol visible con movimiento realista
+- ✅ Montañas distantes en región de Tucumán
+- ✅ Vegetación variada (pinos, quebrachos, eucaliptos, etc.)
+- ✅ Arbustos y rocas dispersas
+- ✅ **Campos de caña de azúcar** en zona subtropical
+- ✅ **Lechos de ríos secos** en zona semi-árida
+- ✅ **Campos agrícolas** (trigo, soja, maíz) en Pampas
+- ✅ **Molinos de viento** y silos en áreas rurales
+- ✅ **Edificios urbanos** con ventanas iluminadas
+- ✅ Postes telegráficos a lo largo de la vía
+- ✅ Cercas y caminos paralelos
+- ✅ Luces de calle en zonas urbanas
+- ✅ Colores específicos por zona geográfica
 
 ## 🚧 Próximas Características
 
