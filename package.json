@@ -1,0 +1,20 @@
+{
+  "name": "train-simulator-argentina",
+  "version": "1.0.0",
+  "description": "Browser-based train simulator: Tucumán to Retiro",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.160.0",
+    "cannon-es": "^0.20.0",
+    "howler": "^2.2.4",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "vite": "^5.0.11"
+  }
+}

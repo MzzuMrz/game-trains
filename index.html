@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Tren: Tucumán - Retiro</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #app {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    #canvas-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* HUD Styles */
+    #hud {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      color: white;
+      font-family: monospace;
+    }
+
+    .hud-panel {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 5px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      pointer-events: auto;
+    }
+
+    #speed-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      min-width: 200px;
+    }
+
+    #station-panel {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      min-width: 250px;
+    }
+
+    #controls-panel {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      min-width: 200px;
+    }
+
+    #info-panel {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      min-width: 200px;
+    }
+
+    .gauge {
+      width: 100%;
+      height: 10px;
+      background: #333;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 5px 0;
+    }
+
+    .gauge-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      transition: width 0.3s ease;
+    }
+
+    .gauge-fill.brake {
+      background: linear-gradient(90deg, #f44336, #ff9800);
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .stat-label {
+      color: #aaa;
+    }
+
+    .stat-value {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    #loading-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      z-index: 1000;
+    }
+
+    #loading-screen h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #loading-screen .subtitle {
+      font-size: 24px;
+      margin-bottom: 40px;
+      color: #ccc;
+    }
+
+    .loading-bar {
+      width: 300px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .loading-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4CAF50, #8BC34A);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .loading-text {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #ccc;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Keyboard hints */
+    .key-hint {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin: 2px;
+      font-size: 12px;
+    }
+
+    h3 {
+      margin-bottom: 10px;
+      color: #4CAF50;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <h1>🚂 Simulador de Tren</h1>
+      <div class="subtitle">Tucumán - Retiro</div>
+      <div class="loading-bar">
+        <div class="loading-bar-fill" id="loading-bar-fill"></div>
+      </div>
+      <div class="loading-text" id="loading-text">Cargando...</div>
+    </div>
+
+    <!-- Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+      <!-- Speed and Controls -->
+      <div id="speed-panel" class="hud-panel">
+        <h3>Control de Velocidad</h3>
+        <div class="stat-row">
+          <span class="stat-label">Velocidad:</span>
+          <span class="stat-value" id="speed-value">0 km/h</span>
+        </div>
+        <div class="gauge">
+          <div class="gauge-fill" id="speed-gauge"></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Aceleración:</span>
+          <span class="stat-value" id="throttle-value">0%</span>
+        </div>
+        <div class="gauge">
+          <div class="gauge-fill" id="throttle-gauge"></div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Frenos:</span>
+          <span class="stat-value" id="brake-value">0%</span>
+        </div>
+        <div class="gauge">
+          <div class="gauge-fill brake" id="brake-gauge"></div>
+        </div>
+      </div>
+
+      <!-- Station Information -->
+      <div id="station-panel" class="hud-panel">
+        <h3>Información de Viaje</h3>
+        <div class="stat-row">
+          <span class="stat-label">Próxima Estación:</span>
+        </div>
+        <div class="stat-value" id="next-station">-</div>
+        <div class="stat-row">
+          <span class="stat-label">Distancia:</span>
+          <span class="stat-value" id="station-distance">-</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Kilómetro:</span>
+          <span class="stat-value" id="current-km">0.0 km</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Hora:</span>
+          <span class="stat-value" id="current-time">00:00</span>
+        </div>
+      </div>
+
+      <!-- Controls Help -->
+      <div id="controls-panel" class="hud-panel">
+        <h3>Controles</h3>
+        <div class="stat-row">
+          <span class="key-hint">W</span> Acelerar
+        </div>
+        <div class="stat-row">
+          <span class="key-hint">S</span> Frenar
+        </div>
+        <div class="stat-row">
+          <span class="key-hint">SPACE</span> Freno de Emergencia
+        </div>
+        <div class="stat-row">
+          <span class="key-hint">H</span> Bocina
+        </div>
+        <div class="stat-row">
+          <span class="key-hint">C</span> Cambiar Cámara
+        </div>
+        <div class="stat-row">
+          <span class="key-hint">+/-</span> Acelerar Tiempo
+        </div>
+      </div>
+
+      <!-- Game Info -->
+      <div id="info-panel" class="hud-panel">
+        <h3>Estado del Sistema</h3>
+        <div class="stat-row">
+          <span class="stat-label">FPS:</span>
+          <span class="stat-value" id="fps-value">60</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Velocidad Tiempo:</span>
+          <span class="stat-value" id="time-scale">1x</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Cámara:</span>
+          <span class="stat-value" id="camera-mode">Conductor</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
